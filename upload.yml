@@ -1,15 +1,9 @@
-name: 'Upload app to TdA'
-description: 'Upload action for the NK of TdA24 competition – staging setting.'
-author: 'Student Cyber Games'
-inputs:
-  image_name:
-    description: 'The name of docker image'
-    required: true
+
   name: 'Upload app to TdA'
 description: 'Upload action for the NK of TdA24 competition – staging setting.'
 author: 'Student Cyber Games'
 inputs:
-  image_name:
+  image_name: node:14-alpine
     description: 'The name of docker image'
     required: true
   image_path:
