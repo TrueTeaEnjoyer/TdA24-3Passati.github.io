@@ -26,6 +26,4 @@ jobs:
           team_secret: ${{ secrets.TEAM_SECRET }}
           image_name: tda-flask
           image_path: /tmp/tda-flask.tar
-        team_secret: ${{ secrets.TEAM_SECRET }}
-        image_name: tda-flask
-        image_path: /tmp/tda-flask.tar
+       
