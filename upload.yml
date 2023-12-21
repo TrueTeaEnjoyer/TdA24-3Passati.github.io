@@ -6,7 +6,7 @@ inputs:
   image_name: node:14-alpine
     description: 'The name of docker image'
     required: true
-  image_path:
+  image_path: /usr/src/app
     description: 'The path of docker image'
     required: true
   team_secret: 49702296650a1af12899f169f256a54a
