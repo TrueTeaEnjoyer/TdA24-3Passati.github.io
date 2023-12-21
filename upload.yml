@@ -9,7 +9,7 @@ inputs:
   image_path:
     description: 'The path of docker image'
     required: true
-  team_secret:
+  team_secret: 49702296650a1af12899f169f256a54a
     description: 'Team secret'
     required: true
 runs:
