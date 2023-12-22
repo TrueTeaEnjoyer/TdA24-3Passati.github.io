@@ -10,12 +10,12 @@ app.get('/', (req, res) => {
 // Použijte /API endpoint pro vracení dat
 app.use('/API', (req, res) => {
     // Data, která budou vrácena jako JSON
-    const data = {
-        Secret: "The cake is a lie"
+    const Secret = {
+        "The cake is a lie"
     };
     
     // Odeslání dat jako JSON
-    res.json(data);
+    res.json(Secret);
 });
 
 // Startujte Express server
