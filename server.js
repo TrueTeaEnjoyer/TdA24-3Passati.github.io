@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 app.use('/API', (req, res) => {
   
 });
-app.get('/lecturer', (req, res) => {
+app.use('/lecturer', (req, res) => {
     res.sendFile(__dirname + '/Lecturer.html');
 });
 // Startujte Express server
