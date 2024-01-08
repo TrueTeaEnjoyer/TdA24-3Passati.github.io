@@ -7,7 +7,7 @@ const port = 8080;
 app.use(bodyParser.json());
 
 // Připojení k databázi
-const db = new sqlite3.Database('tvá_databáze.db', (err) => {
+const db = new sqlite3.Database('TdA_DB.db', (err) => {
     if (err) {
         console.error('Chyba při připojování k databázi:', err.message);
     } else {
