@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 
 // Použijte /API endpoint pro vracení dat
 app.use('/API', (req, res) => {
-  
+  res.sendFile(__dirname + '/api_v1.json');
 });
 app.use('/lecturer', (req, res) => {
     res.sendFile(__dirname + '/Lecturer.html');
