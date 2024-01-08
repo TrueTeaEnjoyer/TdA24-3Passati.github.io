@@ -54,8 +54,7 @@ app.get('/lecturers/:uuid', (req, res) => {
 app.post('/lecturers', (req, res) => {
     const lecturerData = req.body;
 
-    // Vložení nového lektora do databáze
-    // Předpokládám, že tabulka 'lecturers' má sloupce odpovídající vlastnostem lecturerData
+    // Vložení nového lektora do databázr
     db.run('INSERT INTO lecturers (title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, price_per_hour) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [lecturerData.title_before, lecturerData.first_name, lecturerData.middle_name, lecturerData.last_name, lecturerData.title_after, lecturerData.picture_url, lecturerData.location, lecturerData.claim, lecturerData.bio, lecturerData.price_per_hour],
         function(err) {
