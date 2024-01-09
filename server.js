@@ -5,7 +5,7 @@ const path = require('path');  // Přidáno pro manipulaci s cestami
 const port = 8080;
 
 // Nastavení veřejné složky pro statické soubory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'materials')));
 
 // Nastavení endpointu pro získání hlavní stránky
 app.get('/', (req, res) => {
