@@ -13,6 +13,7 @@ app.use('/API', (req, res) => {
 });
 app.get('/lecturer', (req, res) => {
     res.sendFile(__dirname + '/Lecturer.html');
+     res.sendFile(__dirname + '/Lecturer.html');
 });
 // Startujte Express server
 app.listen(port, () => {
