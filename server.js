@@ -13,7 +13,7 @@ app.use('/API', (req, res) => {
 });
 app.get('/lecturer', (req, res) => {
     res.sendFile(__dirname + '/Lecturer.html');
-     res.sendFile(__dirname + '/Lecturer.html');
+     res.sendFile(__dirname + 'TeacherDigitalAgency_LOGO_white.png');
 });
 // Startujte Express server
 app.listen(port, () => {
