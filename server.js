@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 // endpoint pro přidání učitele
 app.post('/api/lectures', (req, res) => {
-    
+    response ("200");
 });
 
 app.get('/lecturer', (req, res) => {
