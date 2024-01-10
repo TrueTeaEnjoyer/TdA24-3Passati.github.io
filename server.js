@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 
 // Endpoint přidat učitele
-app.post('/lecturer', (req, res) => {
+app.post('/api/lecturers', (req, res) => {
     const newLecturer = req.body;
 
     // DB dotaz
