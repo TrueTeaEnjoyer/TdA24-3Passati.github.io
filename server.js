@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const path = require('path');  // Přidáno pro manipulaci s cestami
-
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('TdA_DB.db');
 const port = 8080;
 
 // Nastavení veřejné složky pro statické soubory
