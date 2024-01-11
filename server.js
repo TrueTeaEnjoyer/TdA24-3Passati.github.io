@@ -28,7 +28,7 @@ app.get('/lecturer', (req, res) => {
 });
 app.get('/lecturers', (req, res) => {
  
-  db.all('SELECT * FROM lecturers', [], (err, rows) => {
+  db.all('SELECT * FROM Lecturers', [], (err, rows) => {
     if (err) {
       throw err;
     }
