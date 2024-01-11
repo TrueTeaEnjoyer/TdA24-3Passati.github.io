@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const path = require('path');  // Přidáno pro manipulaci s cestami
 const port = 8080;
-const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 // Nastavení veřejné složky pro statické soubory
 app.use(express.static(path.join(__dirname, 'materials')));
