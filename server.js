@@ -36,6 +36,14 @@ app.get('/lecturers', (req, res) => {
     res.json(rows);
   });
 });
+http.on('close', () => {
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Closed the database connection.');
+  });
+});
 // Startujte Express server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
