@@ -27,12 +27,10 @@ app.get('/lecturer', (req, res) => {
     res.sendFile(path.join(__dirname, 'Lecturer.html'));
 });
 app.get('/lecturers', (req, res) => {
- 
   db.all('SELECT * FROM Lecturers', [], (err, rows) => {
     if (err) {
       throw err;
     }
-    // Return the lecturers as JSON
     res.json(rows);
   });
 });
