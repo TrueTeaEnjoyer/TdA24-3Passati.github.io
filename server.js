@@ -19,7 +19,9 @@ app.use('/API', (req, res) => {
 app.get('/lecturer', (req, res) => {
     res.sendFile(path.join(__dirname, 'Lecturer.html'));
 });
-
+app.get('/lecturers',(req, res) => {
+    
+});   
 // Startujte Express server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
