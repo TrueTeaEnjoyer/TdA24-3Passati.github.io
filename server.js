@@ -20,17 +20,12 @@ const db = new sqlite3.Database('TdA_DB.db', (err) => {
 });
 // Nastavení endpointu pro získání hlavní stránky
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'Hlavni.html'));
 });
 
 // Použijte /API endpoint pro vracení dat
 app.use('/API', (req, res) => {
     // Vložte obsah pro /API, pokud je potřeba
-});
-
-
-app.get('/lecturer', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Lecturer.html'));
 });
 
 //basic get all
