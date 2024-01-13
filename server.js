@@ -44,7 +44,7 @@ app.get('/lecturers', (req, res) => {
 });
 
 //basic post
-app.post('/lecturers', (req, res) => {
+app.post('/api/lecturers', (req, res) => {
   const novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.telephone_numbers, req.body.emails, req.body.price_per_hour];
  
   db.run('INSERT INTO Lecturers (uuid, title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, telephone_numbers, emails, price_per_hour) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', novyLektor, function(err) {
