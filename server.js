@@ -22,6 +22,15 @@ const db = new sqlite3.Database('TdA_DB.db', (err) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Hlavni.html'));
 });
+app.get('/Luk4s', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Lukáš.html'));
+});
+app.get('/Mate0', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Mateo.html'));
+});
+app.get('/samikm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Michal.html'));
+});
 
 // Použijte /API endpoint pro vracení dat
 app.use('/API', (req, res) => {
