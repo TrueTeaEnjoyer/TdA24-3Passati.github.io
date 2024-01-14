@@ -59,7 +59,7 @@ app.post('/api/lecturers', (req, res) => {
       console.error(err.message);
       res.status(500).send('Server error');
     } else {
-      res.status(201).send('Lektor vytvořen');
+      res.status(200).send('Lektor vytvořen');
     }
   });
  });
