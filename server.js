@@ -48,82 +48,123 @@ app.get('/lecturers', (req, res) => {
 });
 
 //basic post
-app.post('/api/lecturers', (req, res) => {
-  const novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.telephone_numbers, req.body.emails, req.body.price_per_hour];
+app.post('/lecturers', async (req, res) => {
+  const novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.price_per_hour];
   let lecturerId;
   const tags = req.body.tags;
+  const contact = req.body.contact;
 
-  // Begin transaction
-  db.run('BEGIN TRANSACTION;', function(err) {
-    if (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
-    } else {
-      // Insert lecturer
-      db.run('INSERT INTO Lecturers (uuid, title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, telephone_numbers, emails, price_per_hour) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', novyLektor, function(err, lecturerRow) {
+  try {
+    // Begin transaction
+    await db.run('BEGIN TRANSACTION;');
+
+    // Insert lecturer
+    const lecturerRow = await new Promise((resolve, reject) => {
+      db.run('INSERT INTO Lecturers (uuid, title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, price_per_hour) VALUES (?,?,?,?,?,?,?,?,?,?,?)', novyLektor, function(err, row) {
         if (err) {
           db.run('ROLLBACK;');
           console.error(err.message);
-          res.status(500).send('Server error');
+          reject(new Error('Server error2'));
         } else {
           lecturerId = req.body.uuid;
+          resolve(row);
+        }
+      });
+    });
 
-          // Insert lecturer-tag relationships
-          if (tags) {
-            tags.forEach(tag => {
-              // Check if the tag already exists
-              db.get('SELECT * FROM Tags WHERE tag = ?', [tag], function(err, row) {
-                if (err) {
-                  db.run('ROLLBACK;');
-                  console.error(err.message);
-                  res.status(500).send('Server error');
-                } else if (row) {
-                  // If the tag exists, insert the relationship
-                  db.run('INSERT INTO LecturerTags (lecturerId, tagId) VALUES (?,?)', [lecturerId, row.id], function(err) {
-                    if (err) {
-                      db.run('ROLLBACK;');
-                      console.error(err.message);
-                      res.status(500).send('Server error');
-                    }
-                  });
-                } else {
-                  // If the tag doesn't exist, insert the tag and the relationship
-                  db.run('INSERT INTO Tags (tag) VALUES (?)', [tag], function(err, tagRow) {
-                    if (err) {
-                      db.run('ROLLBACK;');
-                      console.error(err.message);
-                      res.status(500).send('Server error');
-                    } else {
-                      db.run('INSERT INTO LecturerTags (lecturerId, tagId) VALUES (?,?)', [lecturerId, tagRow.lastID], function(err) {
-                        if (err) {
-                          db.run('ROLLBACK;');
-                          console.error(err.message);
-                          res.status(500).send('Server error');
-                        }
-                      });
-                    }
-                  });
-                }
-              });
+    if (contact) {
+      const telephoneNumbers = contact.telephone_numbers || [];
+      const emails = contact.emails || [];
+
+      await db.run('INSERT INTO Contact (LecUUID) VALUES (?)', [req.body.uuid]);
+
+      await Promise.all(
+        telephoneNumbers.map(number =>
+          new Promise((resolve, reject) => {
+            db.run('INSERT INTO Contact (LecUUID, typ, value) VALUES (?,?,?)', [req.body.uuid, 'telephone_number', number], function(err) {
+              if (err) {
+                db.run('ROLLBACK;');
+                console.error(err.message);
+                reject(new Error('Server error9'));
+              } else {
+                resolve();
+              }
             });
-          }
+          })
+        )
+      );
 
-          // Commit transaction
-          db.run('COMMIT;', function(err) {
+      await Promise.all(
+        emails.map(email =>
+          new Promise((resolve, reject) => {
+            db.run('INSERT INTO Contact (LecUUID, typ, value) VALUES (?,?,?)', [req.body.uuid, 'email', email], function(err) {
+              if (err) {
+                db.run('ROLLBACK;');
+                console.error(err.message);
+                reject(new Error('Server error10'));
+              } else {
+                resolve();
+              }
+            });
+          })
+        )
+      );
+    }
+
+    // Insert lecturer-tag relationships
+    if (tags) {
+      for (const tag of tags) {
+        // Check if the tag already exists
+        const tagRow = await new Promise((resolve, reject) => {
+          db.get('SELECT * FROM Tags WHERE uuid = ?', [tag], function(err, row) {
             if (err) {
               db.run('ROLLBACK;');
               console.error(err.message);
-              res.status(500).send('Server error');
+              reject(new Error('Server error3'));
             } else {
-              res.status(200).send('Lektor vytvořen');
+              resolve(row);
             }
           });
-        }
-      });
-    }
-  });
-});
+        });
 
+        if (tagRow) {
+          // If the tag exists, insert the relationship
+          await db.run('INSERT INTO LecturerTags (lecturer_uuid, tag_uuid) VALUES (?,?)', [lecturerId, tagRow.id]);
+        } else {
+          // If the tag doesn't exist, insert the tag and the relationship
+          const newTagRow = await new Promise((resolve, reject) => {
+            db.run('INSERT INTO Tags (tag) VALUES (?)', [tag], function(err, row) {
+              if (err) {
+                db.run('ROLLBACK;');
+                console.error(err.message);
+                reject(new Error('Server error5'));
+              } else {
+                resolve(row);
+              }
+            });
+          });
+
+          await db.run('INSERT INTO LecturerTags (lecturer_uuid, tag_uuid) VALUES (?,?)', [lecturerId, newTagRow.lastID]);
+          
+        }
+      }
+    }
+
+    // Commit transaction
+    await db.run('COMMIT;');
+
+    res.status(200).send('Lektor vytvořen');
+  } catch (err) {
+    try {
+      // Rollback transaction
+      await db.run('ROLLBACK;');
+    } catch (rollbackErr) {
+      console.error(rollbackErr.message);
+    }
+    console.error(err.message);
+    res.status(500).send('Server error111');
+  }
+});
  //get_uuid
  app.get('/lecturers/:uuid', (req, res) => {
   const uuid = req.params.uuid;
