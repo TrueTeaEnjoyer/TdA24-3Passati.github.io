@@ -50,19 +50,79 @@ app.get('/lecturers', (req, res) => {
 //basic post
 app.post('/api/lecturers', (req, res) => {
   const novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.telephone_numbers, req.body.emails, req.body.price_per_hour];
- 
-  db.run('INSERT INTO Lecturers (uuid, title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, telephone_numbers, emails, price_per_hour) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', novyLektor, function(err) {
-     if (err) {
-       return console.log(err.message);
-     }
-     if (err) {
+  let lecturerId;
+  const tags = req.body.tags;
+
+  // Begin transaction
+  db.run('BEGIN TRANSACTION;', function(err) {
+    if (err) {
       console.error(err.message);
       res.status(500).send('Server error');
     } else {
-      res.status(200).send('Lektor vytvořen');
+      // Insert lecturer
+      db.run('INSERT INTO Lecturers (uuid, title_before, first_name, middle_name, last_name, title_after, picture_url, location, claim, bio, telephone_numbers, emails, price_per_hour) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', novyLektor, function(err, lecturerRow) {
+        if (err) {
+          db.run('ROLLBACK;');
+          console.error(err.message);
+          res.status(500).send('Server error');
+        } else {
+          lecturerId = req.body.uuid;
+
+          // Insert lecturer-tag relationships
+          if (tags) {
+            tags.forEach(tag => {
+              // Check if the tag already exists
+              db.get('SELECT * FROM Tags WHERE tag = ?', [tag], function(err, row) {
+                if (err) {
+                  db.run('ROLLBACK;');
+                  console.error(err.message);
+                  res.status(500).send('Server error');
+                } else if (row) {
+                  // If the tag exists, insert the relationship
+                  db.run('INSERT INTO LecturerTags (lecturerId, tagId) VALUES (?,?)', [lecturerId, row.id], function(err) {
+                    if (err) {
+                      db.run('ROLLBACK;');
+                      console.error(err.message);
+                      res.status(500).send('Server error');
+                    }
+                  });
+                } else {
+                  // If the tag doesn't exist, insert the tag and the relationship
+                  db.run('INSERT INTO Tags (tag) VALUES (?)', [tag], function(err, tagRow) {
+                    if (err) {
+                      db.run('ROLLBACK;');
+                      console.error(err.message);
+                      res.status(500).send('Server error');
+                    } else {
+                      db.run('INSERT INTO LecturerTags (lecturerId, tagId) VALUES (?,?)', [lecturerId, tagRow.lastID], function(err) {
+                        if (err) {
+                          db.run('ROLLBACK;');
+                          console.error(err.message);
+                          res.status(500).send('Server error');
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            });
+          }
+
+          // Commit transaction
+          db.run('COMMIT;', function(err) {
+            if (err) {
+              db.run('ROLLBACK;');
+              console.error(err.message);
+              res.status(500).send('Server error');
+            } else {
+              res.status(200).send('Lektor vytvořen');
+            }
+          });
+        }
+      });
     }
   });
- });
+});
 
  //get_uuid
  app.get('/lecturers/:uuid', (req, res) => {
