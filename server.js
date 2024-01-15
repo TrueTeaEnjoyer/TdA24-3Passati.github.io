@@ -49,7 +49,7 @@ app.get('/lecturers', (req, res) => {
 
 //basic post
 app.post('/lecturers', async (req, res) => {
-  const novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.price_per_hour];
+  let novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.price_per_hour];
   let lecturerId;
   const tags = req.body.tags;
   const contact = req.body.contact;
