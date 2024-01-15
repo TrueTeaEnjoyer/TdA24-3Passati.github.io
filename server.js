@@ -31,12 +31,7 @@ app.get('/Mate0', (req, res) => {
 app.get('/samikm', (req, res) => {
     res.sendFile(path.join(__dirname, 'Michal.html'));
 });
-
-// Použijte /API endpoint pro vracení dat
-app.use('/API', (req, res) => {
-    // Vložte obsah pro /API, pokud je potřeba
-});
-
+
 //basic get all
 app.get('/lecturers', (req, res) => {
   db.all('SELECT * FROM Lecturers', [], (err, rows) => {
@@ -51,8 +46,8 @@ app.get('/lecturers', (req, res) => {
 app.post('/lecturers', async (req, res) => {
   let novyLektor = [req.body.uuid, req.body.title_before, req.body.first_name, req.body.middle_name, req.body.last_name, req.body.title_after, req.body.picture_url, req.body.location, req.body.claim, req.body.bio, req.body.price_per_hour];
   let lecturerId;
-  const tags = req.body.tags;
-  const contact = req.body.contact;
+  let tags = req.body.tags;
+  let contact = req.body.contact;
 
   try {
     // Begin transaction
